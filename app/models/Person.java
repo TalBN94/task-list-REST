@@ -2,8 +2,10 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
-import lombok.*;
-import play.data.validation.Constraints;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

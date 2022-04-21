@@ -1,8 +1,12 @@
 package services;
 
 import dtos.PersonDto;
+import dtos.TaskDto;
 import exceptions.InvalidPersonException;
+import exceptions.InvalidTaskException;
 import io.ebean.DuplicateKeyException;
+import models.Chore;
+import models.HomeWork;
 import models.Person;
 import org.apache.commons.validator.routines.EmailValidator;
 import play.libs.Json;
@@ -10,8 +14,8 @@ import play.mvc.Http;
 import utils.Constants;
 import utils.MsgGenerator;
 import utils.PersonConverter;
+import utils.TaskConverter;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +26,18 @@ public class PersonsService {
         Person person = Json.fromJson(request.body().asJson(), Person.class);
 
         // Validate all fields are present
+        validateAllPersonFieldsPresent(person);
+
+        // Try saving, throw exception if email isn't unique
+        try {
+            person.insert();
+            return PersonConverter.modelToDto(person);
+        } catch (DuplicateKeyException e) {
+            throw new InvalidPersonException(MsgGenerator.emailExists(person.getEmail()));
+        }
+    }
+
+    private void validateAllPersonFieldsPresent(Person person) throws InvalidPersonException {
         if (person.getName() == null) {
             throw new InvalidPersonException(MsgGenerator.missingField(Constants.NAME));
         }
@@ -33,14 +49,6 @@ public class PersonsService {
         }
         if (person.getFavoriteProgrammingLanguage() == null) {
             throw new InvalidPersonException(MsgGenerator.missingField(Constants.FAVORITE_PROGRAMMING_LANGUAGE));
-        }
-
-        // Try saving, throw exception if email isn't unique
-        try {
-            person.insert();
-            return PersonConverter.modelToDto(person);
-        } catch (DuplicateKeyException e) {
-            throw new InvalidPersonException(MsgGenerator.emailExists(person.getEmail()));
         }
     }
 
@@ -80,15 +88,68 @@ public class PersonsService {
         return PersonConverter.modelToDto(person);
     }
 
-    private boolean isValidEmail(String email) {
-        return EmailValidator.getInstance().isValid(email);
-    }
-
     public boolean delete(String id) {
         Person personToDelete = Person.find.byId(id);
         if (personToDelete == null) {
             return false;
         }
         return personToDelete.delete();
+    }
+
+    public TaskDto addTask(String id, Http.Request request) throws InvalidTaskException {
+        Person person = Person.find.byId(id);
+
+        // If no person with supplied id, return null and controller handles response
+        if (person == null) {
+            return null;
+        }
+
+        TaskDto task = Json.fromJson(request.body().asJson(), TaskDto.class);
+        task.setOwnerId(UUID.fromString(id));
+        if (task.getType().equals(Constants.CHORE)) {
+            validateAllChoreFieldsPresent(task);
+            return addChore(task);
+        }
+        else if (task.getType().equals(Constants.HOMEWORK)) {
+            validateAllHomeWorkFieldsPresent(task);
+            return addHomeWork(task);
+        }
+        else {
+            throw new InvalidTaskException(MsgGenerator.invalidTaskType(task.getType()));
+        }
+    }
+
+    private void validateAllChoreFieldsPresent(TaskDto task) throws InvalidTaskException {
+        if (task.getDescription() == null) {
+            throw new InvalidTaskException(MsgGenerator.missingField(Constants.DESCRIPTION));
+        }
+    }
+
+    private void validateAllHomeWorkFieldsPresent(TaskDto task) throws InvalidTaskException {
+        if (task.getCourse() == null) {
+            throw new InvalidTaskException(MsgGenerator.missingField(Constants.COURSE));
+        }
+        if (task.getDueDate() == null) {
+            throw new InvalidTaskException(MsgGenerator.missingField(Constants.DUE_DATE));
+        }
+        if (task.getDetails() == null) {
+            throw new InvalidTaskException(MsgGenerator.missingField(Constants.DETAILS));
+        }
+    }
+
+    private TaskDto addHomeWork(TaskDto task) {
+        HomeWork homeWork = TaskConverter.dtoToHomeWorkModel(task);
+        homeWork.insert();
+        return TaskConverter.modelToDto(homeWork);
+    }
+
+    private TaskDto addChore(TaskDto task) {
+        Chore chore = TaskConverter.dtoToChoreModel(task);
+        chore.insert();
+        return TaskConverter.modelToDto(chore);
+    }
+
+    private boolean isValidEmail(String email) {
+        return EmailValidator.getInstance().isValid(email);
     }
 }

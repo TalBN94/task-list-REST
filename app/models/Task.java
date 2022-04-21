@@ -4,9 +4,11 @@ import enums.Status;
 import io.ebean.Model;
 import lombok.Getter;
 import lombok.Setter;
-import play.data.validation.Constraints;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import java.util.UUID;
 
 @MappedSuperclass
@@ -18,10 +20,9 @@ public abstract class Task extends Model {
     protected UUID id;
 
     @Column(nullable = false)
-    @ManyToOne
-    protected String ownerId;
+    @ManyToOne(targetEntity = Person.class)
+    protected UUID ownerId;
 
     @Column(nullable = false)
-    @Constraints.Required
     protected Status status;
 }

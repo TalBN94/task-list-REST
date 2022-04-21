@@ -1,28 +1,35 @@
 package models;
 
 import enums.Size;
+import enums.Status;
 import io.ebean.Finder;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import play.data.validation.Constraints;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.util.UUID;
 
 @Entity
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class Chore extends Task{
 
-    @Column
-    @Constraints.Required
+    @Column(nullable = false)
     private String description;
 
-    @Column
-    @Constraints.Required
+    @Column(nullable = false)
     private Size size;
 
     public static Finder<String, Chore> find = new Finder<>(Chore.class);
+
+    public Chore(UUID id, UUID ownerId, Status status, String description, Size size) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.status = status;
+        this.description = description;
+        this.size = size;
+    }
 }

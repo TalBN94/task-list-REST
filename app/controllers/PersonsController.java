@@ -1,7 +1,9 @@
 package controllers;
 
 import dtos.PersonDto;
+import dtos.TaskDto;
 import exceptions.InvalidPersonException;
+import exceptions.InvalidTaskException;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -65,6 +67,18 @@ public class PersonsController extends Controller {
 
     public Result getPersonTasks(String id) {
         return ok();
+    }
+
+    public Result addTask(String id, Http.Request request) {
+        try {
+            TaskDto taskDto = personsService.addTask(id, request);
+            if (taskDto == null) {
+                return notFound(MsgGenerator.userIdNotFound(id));
+            }
+            return ok(Json.toJson(taskDto));
+        } catch (InvalidTaskException e) {
+            return badRequest(e.getMessage());
+        }
     }
 
 }

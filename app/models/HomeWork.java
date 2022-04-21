@@ -1,18 +1,18 @@
 package models;
 
+import enums.Status;
 import io.ebean.Finder;
-import io.ebean.Model;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import play.data.validation.Constraints;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
-@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class HomeWork extends Task {
@@ -27,4 +27,13 @@ public class HomeWork extends Task {
     private String details;
 
     public static Finder<String, HomeWork> find = new Finder<>(HomeWork.class);
+
+    public HomeWork(UUID id, UUID ownerId, Status status, String course, Date dueDate, String details) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.status = status;
+        this.course = course;
+        this.dueDate = dueDate;
+        this.details = details;
+    }
 }
