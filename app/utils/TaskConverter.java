@@ -1,17 +1,26 @@
 package utils;
 
 import dtos.TaskDto;
+import enums.Status;
 import models.Chore;
 import models.HomeWork;
 import models.Task;
 
 public class TaskConverter {
     public static HomeWork dtoToHomeWorkModel(TaskDto taskDto) {
-        return new HomeWork(taskDto.getId(), taskDto.getOwnerId(), taskDto.getStatus(), taskDto.getCourse(), taskDto.getDueDate(), taskDto.getDetails());
+        if (taskDto == null) {
+            return null;
+        }
+        Status status = taskDto.getStatus() == null ? Status.Active : taskDto.getStatus();
+        return new HomeWork(taskDto.getId(), taskDto.getOwnerId(), status, taskDto.getCourse(), taskDto.getDueDate(), taskDto.getDetails());
     }
 
     public static Chore dtoToChoreModel(TaskDto taskDto) {
-        return new Chore(taskDto.getId(), taskDto.getOwnerId(), taskDto.getStatus(), taskDto.getDescription(), taskDto.getSize());
+        if (taskDto == null) {
+            return null;
+        }
+        Status status = taskDto.getStatus() == null ? Status.Active : taskDto.getStatus();
+        return new Chore(taskDto.getId(), taskDto.getOwnerId(), status, taskDto.getDescription(), taskDto.getSize());
     }
 
     public static TaskDto modelToDto(Task task) {
