@@ -4,6 +4,13 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index()
+#GET     /welcome/:name                      controllers.HomeController.welcome(name: String)
+
+# Persons controller
+GET     /people                             controllers.PersonsController.getAll
+GET     /people/:id                         controllers.PersonsController.getPerson(id: String)
+GET     /people/:id/tasks                   controllers.PersonsController.getPersonTasks(id: String)
+POST    /people                             controllers.PersonsController.create(request: Request)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
