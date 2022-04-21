@@ -17,16 +17,13 @@ import java.util.Date;
 @Setter
 public class HomeWork extends Task {
 
-    @Column
-    @Constraints.Required
+    @Column(nullable = false)
     private String course;
 
-    @Column
-    @Constraints.Required
+    @Column(nullable = false)
     private Date dueDate;
 
-    @Column
-    @Constraints.Required
+    @Column(nullable = false)
     private String details;
 
     public static Finder<String, HomeWork> find = new Finder<>(HomeWork.class);

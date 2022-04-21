@@ -5,8 +5,8 @@
 
 create table chore (
   id                            uuid not null,
-  owner_id                      varchar(255),
-  status                        integer,
+  owner_id                      varchar(255) not null,
+  status                        integer not null,
   description                   varchar(255),
   size                          integer,
   constraint ck_chore_status check ( status in (0,1)),
@@ -16,20 +16,20 @@ create table chore (
 
 create table home_work (
   id                            uuid not null,
-  owner_id                      varchar(255),
-  status                        integer,
-  course                        varchar(255),
-  due_date                      timestamp,
-  details                       varchar(255),
+  owner_id                      varchar(255) not null,
+  status                        integer not null,
+  course                        varchar(255) not null,
+  due_date                      timestamp not null,
+  details                       varchar(255) not null,
   constraint ck_home_work_status check ( status in (0,1)),
   constraint pk_home_work primary key (id)
 );
 
 create table person (
   id                            uuid not null,
-  name                          varchar(255),
-  email                         varchar(255),
-  favorite_programming_language varchar(255),
+  name                          varchar(255) not null,
+  email                         varchar(255) not null,
+  favorite_programming_language varchar(255) not null,
   constraint uq_person_email unique (email),
   constraint pk_person primary key (id)
 );

@@ -17,12 +17,11 @@ public abstract class Task extends Model {
     @Column
     protected UUID id;
 
-    @Column
+    @Column(nullable = false)
     @ManyToOne
-    @Constraints.Required
     protected String ownerId;
 
-    @Column
+    @Column(nullable = false)
     @Constraints.Required
     protected Status status;
 }

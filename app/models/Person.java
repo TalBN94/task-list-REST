@@ -21,17 +21,13 @@ public class Person extends Model {
     @Column
     private UUID id;
 
-    @Column
-    @Constraints.Required
+    @Column(nullable = false)
     private String name;
 
-    @Constraints.Required
-    @Constraints.Email
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column
-    @Constraints.Required
+    @Column(nullable = false)
     private String favoriteProgrammingLanguage;
 
     public static Finder<String, Person> find = new Finder<>(Person.class);
