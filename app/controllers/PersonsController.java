@@ -17,7 +17,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 public class PersonsController extends Controller {
-    PersonsService personsService;
+    private final PersonsService personsService;
 
     @Inject
     public PersonsController(PersonsService personsService) {
@@ -42,7 +42,7 @@ public class PersonsController extends Controller {
     public Result getPerson(String id) {
         PersonDto personDto = personsService.getPerson(id);
         if (personDto == null) {
-            return notFound(MsgGenerator.userIdNotFound(id));
+            return notFound(MsgGenerator.personIdNotFound(id));
         }
         return ok(Json.toJson(personDto));
     }
@@ -51,7 +51,7 @@ public class PersonsController extends Controller {
         try {
             PersonDto updatedPerson = personsService.update(id, Json.fromJson(request.body().asJson(), PersonDto.class));
             if (updatedPerson == null) {
-                return notFound(MsgGenerator.userIdNotFound(id));
+                return notFound(MsgGenerator.personIdNotFound(id));
             }
             return ok(Json.toJson(updatedPerson));
         } catch (InvalidPersonException e) {
@@ -63,7 +63,7 @@ public class PersonsController extends Controller {
         if (personsService.delete(id)) {
             return ok();
         } else {
-            return badRequest(MsgGenerator.userIdNotFound(id));
+            return badRequest(MsgGenerator.personIdNotFound(id));
         }
     }
 
@@ -76,7 +76,7 @@ public class PersonsController extends Controller {
         try {
             TaskDto taskDto = personsService.addTask(id, request);
             if (taskDto == null) {
-                return notFound(MsgGenerator.userIdNotFound(id));
+                return notFound(MsgGenerator.personIdNotFound(id));
             }
             return created()
                     .withHeader(Constants.LOCATION_HEADER, "some url")

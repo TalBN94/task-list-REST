@@ -5,6 +5,10 @@ public class MsgGenerator {
         return String.format("%s field is missing.", fieldName);
     }
 
+    public static String missingFieldOnTypeChange(String type, String fieldName) {
+        return String.format("Error in updating task type to '%s'. %s field is missing.", type, fieldName);
+    }
+
     public static String emailExists(String email) {
         return String.format("A person with email '%s' already exists.", email);
     }
@@ -13,8 +17,16 @@ public class MsgGenerator {
         return String.format("The email address '%s' is invalid.", email);
     }
 
-    public static String userIdNotFound(String id) {
+    public static String invalidDate() {
+        return "Date format must be yyyy-mm-dd.";
+    }
+
+    public static String personIdNotFound(String id) {
         return String.format("A person with the id '%s' does not exist.", id);
+    }
+
+    public static String taskIdNotFound(String id) {
+        return String.format("A task with the id '%s' does not exist.", id);
     }
 
     public static String invalidTaskType(String type) {

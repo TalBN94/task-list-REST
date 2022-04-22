@@ -3,6 +3,7 @@ package utils;
 import dtos.ChoreDto;
 import dtos.HomeWorkDto;
 import dtos.TaskDto;
+import dtos.TaskUpdateDto;
 import enums.Status;
 import models.Chore;
 import models.HomeWork;
@@ -49,6 +50,33 @@ public class TaskConverter {
     public static List<TaskDto> homeWorkListToDtoList(List<HomeWork> homeworks) {
         return homeworks.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
     }
+
+    public static ChoreDto updateDtoToChoreDto(TaskUpdateDto taskUpdateDto) {
+        return new ChoreDto(
+                taskUpdateDto.getId(),
+                null,
+                taskUpdateDto.getStatus(),
+                Constants.CHORE,
+                taskUpdateDto.getDescription(),
+                taskUpdateDto.getSize()
+        );
+    }
+
+    public static HomeWorkDto updateDtoToHomeworkDto(TaskUpdateDto taskUpdateDto) {
+        return new HomeWorkDto(
+                taskUpdateDto.getId(),
+                null,
+                taskUpdateDto.getStatus(),
+                Constants.HOMEWORK,
+                taskUpdateDto.getCourse(),
+                taskUpdateDto.getDueDate(),
+                taskUpdateDto.getDetails()
+        );
+    }
+
+    //###################
+    // Helper functions
+    //###################
 
     private static TaskDto modelToChoreTaskDto(Chore chore) {
         return new ChoreDto(

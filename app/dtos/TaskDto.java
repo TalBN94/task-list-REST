@@ -1,10 +1,8 @@
 package dtos;
 
-import enums.Size;
 import enums.Status;
 import lombok.*;
 
-import java.util.Date;
 import java.util.UUID;
 
 @AllArgsConstructor

@@ -14,10 +14,7 @@ import models.Person;
 import org.apache.commons.validator.routines.EmailValidator;
 import play.libs.Json;
 import play.mvc.Http;
-import utils.Constants;
-import utils.MsgGenerator;
-import utils.PersonConverter;
-import utils.TaskConverter;
+import utils.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -49,7 +46,7 @@ public class PersonsService {
         if (person.getEmail() == null) {
             throw new InvalidPersonException(MsgGenerator.missingField(Constants.EMAIL));
         }
-        if (!isValidEmail(person.getEmail())) {
+        if (!Validators.isValidEmail(person.getEmail())) {
             throw new InvalidPersonException(MsgGenerator.invalidEmail(person.getEmail()));
         }
         if (person.getFavoriteProgrammingLanguage() == null) {
@@ -78,7 +75,7 @@ public class PersonsService {
 
         // Update email field if present and valid
         if (updatePersonDto.getEmail() != null) {
-            if (!isValidEmail(updatePersonDto.getEmail())) {
+            if (!Validators.isValidEmail(updatePersonDto.getEmail())) {
                 throw new InvalidPersonException(MsgGenerator.invalidEmail(updatePersonDto.getEmail()));
             } else {
                 person.setEmail(updatePersonDto.getEmail());
@@ -112,11 +109,11 @@ public class PersonsService {
             TaskDto task = Json.fromJson(request.body().asJson(), TaskDto.class);
             task.setOwnerId(UUID.fromString(id));
             if (task.getType().equals(Constants.CHORE)) {
-                validateAllChoreFieldsPresent(task);
+                Validators.validateAllChoreFieldsPresent((ChoreDto) task);
                 return addChore(task);
             }
             else if (task.getType().equals(Constants.HOMEWORK)) {
-                validateAllHomeWorkFieldsPresent(task);
+                Validators.validateAllHomeWorkFieldsPresent((HomeWorkDto) task);
                 return addHomeWork(task);
             }
             else {
@@ -158,24 +155,6 @@ public class PersonsService {
             ).collect(Collectors.toList());
     }
 
-    private void validateAllChoreFieldsPresent(TaskDto task) throws InvalidTaskException {
-        if (((ChoreDto)task).getDescription() == null) {
-            throw new InvalidTaskException(MsgGenerator.missingField(Constants.DESCRIPTION));
-        }
-    }
-
-    private void validateAllHomeWorkFieldsPresent(TaskDto task) throws InvalidTaskException {
-        if (((HomeWorkDto)task).getCourse() == null) {
-            throw new InvalidTaskException(MsgGenerator.missingField(Constants.COURSE));
-        }
-        if (((HomeWorkDto)task).getDueDate() == null) {
-            throw new InvalidTaskException(MsgGenerator.missingField(Constants.DUE_DATE));
-        }
-        if (((HomeWorkDto)task).getDetails() == null) {
-            throw new InvalidTaskException(MsgGenerator.missingField(Constants.DETAILS));
-        }
-    }
-
     private TaskDto addHomeWork(TaskDto task) {
         HomeWork homeWork = TaskConverter.dtoToHomeWorkModel(task);
         homeWork.insert();
@@ -186,9 +165,5 @@ public class PersonsService {
         Chore chore = TaskConverter.dtoToChoreModel(task);
         chore.insert();
         return TaskConverter.modelToDto(chore);
-    }
-
-    private boolean isValidEmail(String email) {
-        return EmailValidator.getInstance().isValid(email);
     }
 }
