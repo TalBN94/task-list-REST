@@ -9,7 +9,7 @@ GET     /                           controllers.HomeController.index()
 # Persons controller
 GET     /people                             controllers.PersonsController.getAll
 GET     /people/:id                         controllers.PersonsController.getPerson(id: String)
-GET     /people/:id/tasks                   controllers.PersonsController.getPersonTasks(id: String)
+GET     /people/:id/tasks                   controllers.PersonsController.getPersonTasks(id: String, status: String ?="Active")
 POST    /people                             controllers.PersonsController.createPerson(request: Request)
 POST    /people/:id/tasks                   controllers.PersonsController.addTask(id: String, request: Request)
 PATCH   /people/:id                         controllers.PersonsController.updatePerson(id: String, request: Request)

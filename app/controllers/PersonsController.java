@@ -2,6 +2,7 @@ package controllers;
 
 import dtos.PersonDto;
 import dtos.TaskDto;
+import enums.Status;
 import exceptions.InvalidPersonException;
 import exceptions.InvalidTaskException;
 import play.libs.Json;
@@ -13,6 +14,7 @@ import utils.Constants;
 import utils.MsgGenerator;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class PersonsController extends Controller {
     PersonsService personsService;
@@ -65,8 +67,9 @@ public class PersonsController extends Controller {
         }
     }
 
-    public Result getPersonTasks(String id) {
-        return ok();
+    public Result getPersonTasks(String id, String status) {
+        List<TaskDto> foundTasks = personsService.getPersonTasks(id, Status.getStatusByName(status));
+        return ok(Json.toJson(foundTasks));
     }
 
     public Result addTask(String id, Http.Request request) {
@@ -75,7 +78,9 @@ public class PersonsController extends Controller {
             if (taskDto == null) {
                 return notFound(MsgGenerator.userIdNotFound(id));
             }
-            return ok(Json.toJson(taskDto));
+            return created()
+                    .withHeader(Constants.LOCATION_HEADER, "some url")
+                    .withHeader(Constants.CREATED_ID_HEADER, taskDto.getId().toString());
         } catch (InvalidTaskException e) {
             return badRequest(e.getMessage());
         }

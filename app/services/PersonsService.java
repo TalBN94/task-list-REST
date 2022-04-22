@@ -1,7 +1,10 @@
 package services;
 
+import dtos.ChoreDto;
+import dtos.HomeWorkDto;
 import dtos.PersonDto;
 import dtos.TaskDto;
+import enums.Status;
 import exceptions.InvalidPersonException;
 import exceptions.InvalidTaskException;
 import io.ebean.DuplicateKeyException;
@@ -18,6 +21,8 @@ import utils.TaskConverter;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PersonsService {
 
@@ -103,36 +108,70 @@ public class PersonsService {
         if (person == null) {
             return null;
         }
+        try {
+            TaskDto task = Json.fromJson(request.body().asJson(), TaskDto.class);
+            task.setOwnerId(UUID.fromString(id));
+            if (task.getType().equals(Constants.CHORE)) {
+                validateAllChoreFieldsPresent(task);
+                return addChore(task);
+            }
+            else if (task.getType().equals(Constants.HOMEWORK)) {
+                validateAllHomeWorkFieldsPresent(task);
+                return addHomeWork(task);
+            }
+            else {
+                throw new InvalidTaskException(MsgGenerator.invalidTaskType(task.getType()));
+            }
+        } catch (Exception e) {
+            throw new InvalidTaskException(MsgGenerator.invalidTaskEnum());
+        }
 
-        TaskDto task = Json.fromJson(request.body().asJson(), TaskDto.class);
-        task.setOwnerId(UUID.fromString(id));
-        if (task.getType().equals(Constants.CHORE)) {
-            validateAllChoreFieldsPresent(task);
-            return addChore(task);
+    }
+
+    public List<TaskDto> getPersonTasks(String id, Status status) {
+        if (status == null) {
+            return getPersonTasksNoStatus(id);
         }
-        else if (task.getType().equals(Constants.HOMEWORK)) {
-            validateAllHomeWorkFieldsPresent(task);
-            return addHomeWork(task);
-        }
-        else {
-            throw new InvalidTaskException(MsgGenerator.invalidTaskType(task.getType()));
-        }
+        return getPersonTasksWithStatus(id, status);
+    }
+
+
+
+    // #######################
+    // Private helper methods
+    // #######################
+
+    private List<TaskDto> getPersonTasksNoStatus(String id) {
+        List<Chore> chores = Chore.find.query().where().eq(Constants.OWNER_ID, id).findList();
+        List<HomeWork> homeworks = HomeWork.find.query().where().eq(Constants.OWNER_ID, id).findList();
+        return Stream.concat(
+                TaskConverter.choreListToDtoList(chores).stream(),
+                TaskConverter.homeWorkListToDtoList(homeworks).stream()
+        ).collect(Collectors.toList());
+    }
+    private List<TaskDto> getPersonTasksWithStatus(String id, Status status) {
+        List<Chore> chores = Chore.find.query().where().eq(Constants.OWNER_ID, id).eq(Constants.STATUS, status).findList();
+        List<HomeWork> homeworks = HomeWork.find.query().where().eq(Constants.OWNER_ID, id).eq(Constants.STATUS, status).findList();
+        return Stream.concat(
+                TaskConverter.choreListToDtoList(chores).stream(),
+                TaskConverter.homeWorkListToDtoList(homeworks).stream()
+            ).collect(Collectors.toList());
     }
 
     private void validateAllChoreFieldsPresent(TaskDto task) throws InvalidTaskException {
-        if (task.getDescription() == null) {
+        if (((ChoreDto)task).getDescription() == null) {
             throw new InvalidTaskException(MsgGenerator.missingField(Constants.DESCRIPTION));
         }
     }
 
     private void validateAllHomeWorkFieldsPresent(TaskDto task) throws InvalidTaskException {
-        if (task.getCourse() == null) {
+        if (((HomeWorkDto)task).getCourse() == null) {
             throw new InvalidTaskException(MsgGenerator.missingField(Constants.COURSE));
         }
-        if (task.getDueDate() == null) {
+        if (((HomeWorkDto)task).getDueDate() == null) {
             throw new InvalidTaskException(MsgGenerator.missingField(Constants.DUE_DATE));
         }
-        if (task.getDetails() == null) {
+        if (((HomeWorkDto)task).getDetails() == null) {
             throw new InvalidTaskException(MsgGenerator.missingField(Constants.DETAILS));
         }
     }

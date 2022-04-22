@@ -1,12 +1,13 @@
 package dtos;
 
+import enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import utils.Constants;
 
 import java.util.Date;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,5 +17,11 @@ public class HomeWorkDto extends TaskDto{
     private String course;
     private Date dueDate;
     private String details;
-    private final String type = Constants.HOMEWORK;
+
+    public HomeWorkDto(UUID id, UUID ownerId, Status status, String type, String course, Date dueDate, String details) {
+        super(id, ownerId, status, type);
+        this.course = course;
+        this.dueDate = dueDate;
+        this.details = details;
+    }
 }

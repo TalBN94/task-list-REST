@@ -1,26 +1,33 @@
 package utils;
 
+import dtos.ChoreDto;
+import dtos.HomeWorkDto;
 import dtos.TaskDto;
 import enums.Status;
 import models.Chore;
 import models.HomeWork;
 import models.Task;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class TaskConverter {
     public static HomeWork dtoToHomeWorkModel(TaskDto taskDto) {
         if (taskDto == null) {
             return null;
         }
-        Status status = taskDto.getStatus() == null ? Status.Active : taskDto.getStatus();
-        return new HomeWork(taskDto.getId(), taskDto.getOwnerId(), status, taskDto.getCourse(), taskDto.getDueDate(), taskDto.getDetails());
+        HomeWorkDto homeWorkDto = (HomeWorkDto)taskDto;
+        Status status = homeWorkDto.getStatus() == null ? Status.Active : homeWorkDto.getStatus();
+        return new HomeWork(homeWorkDto.getId(), taskDto.getOwnerId(), status, homeWorkDto.getCourse(), homeWorkDto.getDueDate(), homeWorkDto.getDetails());
     }
 
     public static Chore dtoToChoreModel(TaskDto taskDto) {
         if (taskDto == null) {
             return null;
         }
-        Status status = taskDto.getStatus() == null ? Status.Active : taskDto.getStatus();
-        return new Chore(taskDto.getId(), taskDto.getOwnerId(), status, taskDto.getDescription(), taskDto.getSize());
+        ChoreDto choreDto = (ChoreDto)taskDto;
+        Status status = choreDto.getStatus() == null ? Status.Active : choreDto.getStatus();
+        return new Chore(choreDto.getId(), choreDto.getOwnerId(), status, choreDto.getDescription(), choreDto.getSize());
     }
 
     public static TaskDto modelToDto(Task task) {
@@ -31,26 +38,38 @@ public class TaskConverter {
         }
     }
 
+    public static List<TaskDto> modelListToDtoList(List<Task> tasks) {
+        return tasks.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
+    }
+
+    public static List<TaskDto> choreListToDtoList(List<Chore> chores) {
+        return chores.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
+    }
+
+    public static List<TaskDto> homeWorkListToDtoList(List<HomeWork> homeworks) {
+        return homeworks.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
+    }
+
     private static TaskDto modelToChoreTaskDto(Chore chore) {
-        return TaskDto.builder()
-                .id(chore.getId())
-                .ownerId(chore.getOwnerId())
-                .status(chore.getStatus())
-                .type(Constants.CHORE)
-                .description(chore.getDescription())
-                .size(chore.getSize())
-                .build();
+        return new ChoreDto(
+                chore.getId(),
+                chore.getOwnerId(),
+                chore.getStatus(),
+                Constants.CHORE,
+                chore.getDescription(),
+                chore.getSize()
+        );
     }
 
     private static TaskDto modelToHomeWorkTaskDto(HomeWork homeWork) {
-        return TaskDto.builder()
-                .id(homeWork.getId())
-                .ownerId(homeWork.getOwnerId())
-                .status(homeWork.getStatus())
-                .type(Constants.HOMEWORK)
-                .course(homeWork.getCourse())
-                .dueDate(homeWork.getDueDate())
-                .details(homeWork.getDetails())
-                .build();
+        return new HomeWorkDto(
+                homeWork.getId(),
+                homeWork.getOwnerId(),
+                homeWork.getStatus(),
+                Constants.HOMEWORK,
+                homeWork.getCourse(),
+                homeWork.getDueDate(),
+                homeWork.getDetails()
+        );
     }
 }

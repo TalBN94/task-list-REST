@@ -20,4 +20,8 @@ public class MsgGenerator {
     public static String invalidTaskType(String type) {
         return String.format("Type '%s' is not a valid task type.", type);
     }
+
+    public static String invalidTaskEnum() {
+        return "Some of the fields in the request have invalid values.";
+    }
 }

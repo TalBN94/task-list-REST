@@ -5,10 +5,10 @@
 
 create table chore (
   id                            uuid not null,
-  owner_id                      varchar(255) not null,
+  owner_id                      uuid not null,
   status                        integer not null,
-  description                   varchar(255),
-  size                          integer,
+  description                   varchar(255) not null,
+  size                          integer not null,
   constraint ck_chore_status check ( status in (0,1)),
   constraint ck_chore_size check ( size in (0,1,2)),
   constraint pk_chore primary key (id)
@@ -16,7 +16,7 @@ create table chore (
 
 create table home_work (
   id                            uuid not null,
-  owner_id                      varchar(255) not null,
+  owner_id                      uuid not null,
   status                        integer not null,
   course                        varchar(255) not null,
   due_date                      timestamp not null,

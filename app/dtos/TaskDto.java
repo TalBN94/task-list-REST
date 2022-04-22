@@ -13,19 +13,8 @@ import java.util.UUID;
 @Setter
 @Builder
 public class TaskDto {
-    private UUID id;
-    private UUID ownerId;
-    private Status status;
-    private String type;
-
-    // Chore fields
-    private String description;
-    private Size size;
-
-    // Homework fields
-    private String course;
-    private Date dueDate;
-    private String details;
-
-
+    protected UUID id;
+    protected UUID ownerId;
+    protected Status status;
+    protected String type;
 }
