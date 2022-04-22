@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.util.UUID;
 
@@ -23,7 +22,6 @@ public abstract class Task extends Model {
     protected UUID id;
 
     @Column(nullable = false)
-    @ManyToOne(targetEntity = Person.class)
     protected UUID ownerId;
 
     @Column(nullable = false)

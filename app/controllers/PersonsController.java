@@ -35,7 +35,7 @@ public class PersonsController extends Controller {
         try {
             PersonDto personDto = personsService.createPerson(request);
             return created()
-                    .withHeader(Constants.LOCATION_HEADER, "some url") // TODO - verify what should be the URL
+                    .withHeader(Constants.LOCATION_HEADER, "some url") //TODO - verify what should be the URL
                     .withHeader(Constants.CREATED_ID_HEADER, personDto.getId().toString());
         } catch (InvalidPersonException e) {
             return badRequest(e.getMessage());
@@ -126,7 +126,7 @@ public class PersonsController extends Controller {
                 return notFound(MsgGenerator.personIdNotFound(id));
             }
             return created()
-                    .withHeader(Constants.LOCATION_HEADER, "some url")
+                    .withHeader(Constants.LOCATION_HEADER, "some url") //TODO - verify what should be the URL
                     .withHeader(Constants.CREATED_ID_HEADER, taskDto.getId().toString());
         } catch (InvalidTaskException e) {
             return badRequest(e.getMessage());
