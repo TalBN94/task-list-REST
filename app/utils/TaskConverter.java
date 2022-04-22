@@ -21,24 +21,22 @@ public class TaskConverter {
      * Converts TaskDTO to HomeWork entity.
      * @return HomeWork entity
      * */
-    public static HomeWork dtoToHomeWorkModel(TaskDto taskDto) {
-        if (taskDto == null) {
+    public static HomeWork homeWorkDtoToHomeWorkModel(HomeWorkDto homeWorkDto) {
+        if (homeWorkDto == null) {
             return null;
         }
-        HomeWorkDto homeWorkDto = (HomeWorkDto)taskDto;
         Status status = homeWorkDto.getStatus() == null ? Status.Active : homeWorkDto.getStatus();
-        return new HomeWork(homeWorkDto.getId(), taskDto.getOwnerId(), status, homeWorkDto.getCourse(), homeWorkDto.getDueDate(), homeWorkDto.getDetails());
+        return new HomeWork(homeWorkDto.getId(), homeWorkDto.getOwnerId(), status, homeWorkDto.getCourse(), homeWorkDto.getDueDate(), homeWorkDto.getDetails());
     }
 
     /**
      * Converts TaskDTO to Chore entity.
      * @return Chore entity
      * */
-    public static Chore dtoToChoreModel(TaskDto taskDto) {
-        if (taskDto == null) {
+    public static Chore choreDtoToChoreModel(ChoreDto choreDto) {
+        if (choreDto == null) {
             return null;
         }
-        ChoreDto choreDto = (ChoreDto)taskDto;
         Status status = choreDto.getStatus() == null ? Status.Active : choreDto.getStatus();
         return new Chore(choreDto.getId(), choreDto.getOwnerId(), status, choreDto.getDescription(), choreDto.getSize());
     }

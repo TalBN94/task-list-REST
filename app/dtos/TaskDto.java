@@ -6,11 +6,14 @@ import lombok.*;
 import java.util.UUID;
 
 /**
- * An abstract DTO class which should be extended by task types DTOs
+ * A DTO class to transfer task data, which should be extended by all task types
  * */
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public abstract class TaskDto {
+@Builder
+public class TaskDto {
     protected UUID id;
     protected UUID ownerId;
     protected Status status;

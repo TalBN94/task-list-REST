@@ -8,6 +8,7 @@ import enums.Status;
 import exceptions.InvalidPersonException;
 import exceptions.InvalidTaskException;
 import io.ebean.DuplicateKeyException;
+import io.ebean.Model;
 import models.Chore;
 import models.HomeWork;
 import models.Person;
@@ -105,6 +106,8 @@ public class PersonsService {
         if (personToDelete == null) {
             return false;
         }
+        Chore.find.query().where().eq(Constants.OWNER_ID, id).findList().forEach(Model::delete);
+        HomeWork.find.query().where().eq(Constants.OWNER_ID, id).findList().forEach(Model::delete);
         return personToDelete.delete();
     }
 
@@ -122,14 +125,17 @@ public class PersonsService {
         }
         try {
             TaskDto task = Json.fromJson(request.body().asJson(), TaskDto.class);
-            task.setOwnerId(UUID.fromString(id));
             if (task.getType().equalsIgnoreCase(Constants.CHORE)) {
-                Validators.validateAllChoreFieldsPresent((ChoreDto) task);
-                return addChore(task);
+                ChoreDto choreDto = Json.fromJson(request.body().asJson(), ChoreDto.class);
+                Validators.validateAllChoreFieldsPresent(choreDto);
+                choreDto.setOwnerId(UUID.fromString(id));
+                return addChore(choreDto);
             }
             else if (task.getType().equalsIgnoreCase(Constants.HOMEWORK)) {
-                Validators.validateAllHomeWorkFieldsPresent((HomeWorkDto) task);
-                return addHomeWork(task);
+                HomeWorkDto homeWorkDto = Json.fromJson(request.body().asJson(), HomeWorkDto.class);
+                Validators.validateAllHomeWorkFieldsPresent(homeWorkDto);
+                homeWorkDto.setOwnerId(UUID.fromString(id));
+                return addHomeWork(homeWorkDto);
             }
             else {
                 throw new InvalidTaskException(MsgGenerator.invalidTaskType(task.getType()));
@@ -187,14 +193,14 @@ public class PersonsService {
             ).collect(Collectors.toList());
     }
 
-    private TaskDto addHomeWork(TaskDto task) {
-        HomeWork homeWork = TaskConverter.dtoToHomeWorkModel(task);
+    private TaskDto addHomeWork(HomeWorkDto task) {
+        HomeWork homeWork = TaskConverter.homeWorkDtoToHomeWorkModel(task);
         homeWork.insert();
         return TaskConverter.modelToDto(homeWork);
     }
 
-    private TaskDto addChore(TaskDto task) {
-        Chore chore = TaskConverter.dtoToChoreModel(task);
+    private TaskDto addChore(ChoreDto task) {
+        Chore chore = TaskConverter.choreDtoToChoreModel(task);
         chore.insert();
         return TaskConverter.modelToDto(chore);
     }

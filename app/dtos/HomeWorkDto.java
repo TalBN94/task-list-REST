@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import utils.Constants;
 
 import java.util.Date;
 import java.util.UUID;
@@ -23,10 +24,8 @@ public class HomeWorkDto extends TaskDto{
     private Date dueDate;
     private String details;
 
-    public HomeWorkDto(UUID id, UUID ownerId, Status status, String course, Date dueDate, String details) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.status = status;
+    public HomeWorkDto(UUID id, UUID ownerId, Status status,String course, Date dueDate, String details) {
+        super(id, ownerId, status, Constants.HOMEWORK);
         this.course = course;
         this.dueDate = dueDate;
         this.details = details;

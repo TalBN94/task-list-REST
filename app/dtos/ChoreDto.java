@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import utils.Constants;
 
 import java.util.UUID;
 
@@ -21,9 +22,7 @@ public class ChoreDto extends TaskDto{
     private Size size;
 
     public ChoreDto(UUID id, UUID ownerId, Status status, String description, Size size) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.status = status;
+        super(id, ownerId, status, Constants.CHORE);
         this.description = description;
         this.size = size;
     }
