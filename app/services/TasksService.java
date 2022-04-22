@@ -4,13 +4,17 @@ import dtos.ChoreDto;
 import dtos.HomeWorkDto;
 import dtos.TaskDto;
 import dtos.TaskUpdateDto;
+import enums.Status;
 import exceptions.InvalidTaskException;
 import models.Chore;
 import models.HomeWork;
+import models.Person;
 import utils.Constants;
 import utils.MsgGenerator;
 import utils.TaskConverter;
 import utils.Validators;
+
+import java.util.UUID;
 
 public class TasksService {
     public TaskDto getTask(String id) {
@@ -49,7 +53,55 @@ public class TasksService {
         return null;
     }
 
+    public boolean updateTaskStatus(String id, Status status) {
+        Chore choreToUpdate = Chore.find.byId(id);
+        if (choreToUpdate != null) {
+            choreToUpdate.setStatus(status);
+            choreToUpdate.update();
+            return true;
+        }
+        HomeWork homeWorkToUpdate = HomeWork.find.byId(id);
+        if (homeWorkToUpdate != null) {
+            homeWorkToUpdate.setStatus(status);
+            homeWorkToUpdate.update();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateTaskOwner(String id, String ownerId) throws InvalidTaskException {
+        if (Person.find.byId(ownerId) == null) {
+            throw new InvalidTaskException(MsgGenerator.personIdNotFound(ownerId));
+        }
+
+        Chore choreToUpdate = Chore.find.byId(id);
+        if (choreToUpdate != null) {
+            choreToUpdate.setOwnerId(UUID.fromString(ownerId));
+            choreToUpdate.update();
+            return true;
+        }
+        HomeWork homeWorkToUpdate = HomeWork.find.byId(id);
+        if (homeWorkToUpdate != null) {
+            homeWorkToUpdate.setOwnerId(UUID.fromString(ownerId));
+            homeWorkToUpdate.update();
+            return true;
+        }
+        return false;
+    }
+    public boolean delete(String id) {
+        Chore choreToDelete = Chore.find.byId(id);
+        if (choreToDelete != null) {
+            return choreToDelete.delete();
+        }
+        HomeWork homeWorkToDelete = HomeWork.find.byId(id);
+        if (homeWorkToDelete != null) {
+            return homeWorkToDelete.delete();
+        }
+        return false;
+    }
+
     //TODO - verify that this scenario is possible (type change of task via update). if so, what is the expected behavior in case of missing fields?
+
     private TaskDto updateChore(HomeWorkDto updateDto, Chore chore) throws InvalidTaskException {
         Validators.validateAllHomeWorkFieldsPresent(updateDto);
         HomeWork updatedTask = new HomeWork(

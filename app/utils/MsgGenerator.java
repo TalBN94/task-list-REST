@@ -21,6 +21,10 @@ public class MsgGenerator {
         return "Date format must be yyyy-mm-dd.";
     }
 
+    public static String invalidStatus(String status) {
+        return String.format("value '%s' is not a legal task status.", status);
+    }
+
     public static String personIdNotFound(String id) {
         return String.format("A person with the id '%s' does not exist.", id);
     }
