@@ -12,7 +12,15 @@ import models.Task;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A utility class with static methods to convert task objects.
+ * */
 public class TaskConverter {
+
+    /**
+     * Converts TaskDTO to HomeWork entity.
+     * @return HomeWork entity
+     * */
     public static HomeWork dtoToHomeWorkModel(TaskDto taskDto) {
         if (taskDto == null) {
             return null;
@@ -22,6 +30,10 @@ public class TaskConverter {
         return new HomeWork(homeWorkDto.getId(), taskDto.getOwnerId(), status, homeWorkDto.getCourse(), homeWorkDto.getDueDate(), homeWorkDto.getDetails());
     }
 
+    /**
+     * Converts TaskDTO to Chore entity.
+     * @return Chore entity
+     * */
     public static Chore dtoToChoreModel(TaskDto taskDto) {
         if (taskDto == null) {
             return null;
@@ -31,6 +43,10 @@ public class TaskConverter {
         return new Chore(choreDto.getId(), choreDto.getOwnerId(), status, choreDto.getDescription(), choreDto.getSize());
     }
 
+    /**
+     * Converts a Task entity to a TaskDto.
+     * @return the TaskDTO
+     * */
     public static TaskDto modelToDto(Task task) {
         if (task instanceof Chore) {
             return modelToChoreTaskDto((Chore)task);
@@ -39,51 +55,60 @@ public class TaskConverter {
         }
     }
 
-    public static List<TaskDto> modelListToDtoList(List<Task> tasks) {
-        return tasks.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
-    }
-
+    /**
+     * Converts a list of Chore entities to a list of TaskDTOs.
+     * @return the list of TaskDTOs
+     * */
     public static List<TaskDto> choreListToDtoList(List<Chore> chores) {
         return chores.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
     }
 
+    /**
+     * Converts a list of HomeWork entities to a list of TaskDTOs.
+     * @return the list of TaskDTOs
+     * */
     public static List<TaskDto> homeWorkListToDtoList(List<HomeWork> homeworks) {
         return homeworks.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
     }
 
+    /**
+     * Converts a TaskUpdateDTO to a ChoreDTO.
+     * @return the ChoreDTO
+     * */
     public static ChoreDto updateDtoToChoreDto(TaskUpdateDto taskUpdateDto) {
         return new ChoreDto(
                 taskUpdateDto.getId(),
                 null,
                 taskUpdateDto.getStatus(),
-                Constants.CHORE,
                 taskUpdateDto.getDescription(),
                 taskUpdateDto.getSize()
         );
     }
 
+    /**
+     * Converts a TaskUpdateDTO to a HomeWorkDTO.
+     * @return the HomeWorkDTO
+     * */
     public static HomeWorkDto updateDtoToHomeworkDto(TaskUpdateDto taskUpdateDto) {
         return new HomeWorkDto(
                 taskUpdateDto.getId(),
                 null,
                 taskUpdateDto.getStatus(),
-                Constants.HOMEWORK,
                 taskUpdateDto.getCourse(),
                 taskUpdateDto.getDueDate(),
                 taskUpdateDto.getDetails()
         );
     }
 
-    //###################
+    ////////////////////
     // Helper functions
-    //###################
+    ////////////////////
 
     private static TaskDto modelToChoreTaskDto(Chore chore) {
         return new ChoreDto(
                 chore.getId(),
                 chore.getOwnerId(),
                 chore.getStatus(),
-                Constants.CHORE,
                 chore.getDescription(),
                 chore.getSize()
         );
@@ -94,7 +119,6 @@ public class TaskConverter {
                 homeWork.getId(),
                 homeWork.getOwnerId(),
                 homeWork.getStatus(),
-                Constants.HOMEWORK,
                 homeWork.getCourse(),
                 homeWork.getDueDate(),
                 homeWork.getDetails()

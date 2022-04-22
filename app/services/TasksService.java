@@ -16,19 +16,35 @@ import utils.Validators;
 
 import java.util.UUID;
 
+/**
+ * A service class for Task which implements the server logic and interaction with DB
+ * */
 public class TasksService {
+
+    /**
+     * Gets a task from the system by its id.
+     * @return the requested task, or null if no such task exists
+     * */
     public TaskDto getTask(String id) {
+        // Check if task is a chore
         Chore chore = Chore.find.byId(id);
         if (chore != null) {
             return TaskConverter.modelToDto(chore);
         }
+        // Check if task is a homework
         HomeWork homeWork = HomeWork.find.byId(id);
         if (homeWork != null) {
             return TaskConverter.modelToDto(homeWork);
         }
+        // no such task exists
         return null;
     }
 
+    /**
+     * Updates a task in the system.
+     * @return the updated task details, or null if no task with the given id exists
+     * @throws InvalidTaskException if the request isn't valid
+     * */
     public TaskDto update(String id, TaskUpdateDto taskUpdateDto) throws InvalidTaskException {
         Chore chore = Chore.find.byId(id);
         if (chore != null) {
@@ -53,6 +69,10 @@ public class TasksService {
         return null;
     }
 
+    /**
+     * Updates a task's status.
+     * @return whether the update was successful
+     * */
     public boolean updateTaskStatus(String id, Status status) {
         Chore choreToUpdate = Chore.find.byId(id);
         if (choreToUpdate != null) {
@@ -69,6 +89,10 @@ public class TasksService {
         return false;
     }
 
+    /**
+     * Updates a task's owner.
+     * @return whether the update was successful
+     * */
     public boolean updateTaskOwner(String id, String ownerId) throws InvalidTaskException {
         if (Person.find.byId(ownerId) == null) {
             throw new InvalidTaskException(MsgGenerator.personIdNotFound(ownerId));
@@ -88,6 +112,11 @@ public class TasksService {
         }
         return false;
     }
+
+    /**
+     * Deletes a task from the system.
+     * @return whether the update was successful
+     * */
     public boolean delete(String id) {
         Chore choreToDelete = Chore.find.byId(id);
         if (choreToDelete != null) {
@@ -100,8 +129,10 @@ public class TasksService {
         return false;
     }
 
+    //////////////////
+    // Helper methods
+    //////////////////
     //TODO - verify that this scenario is possible (type change of task via update). if so, what is the expected behavior in case of missing fields?
-
     private TaskDto updateChore(HomeWorkDto updateDto, Chore chore) throws InvalidTaskException {
         Validators.validateAllHomeWorkFieldsPresent(updateDto);
         HomeWork updatedTask = new HomeWork(

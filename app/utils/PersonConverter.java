@@ -6,6 +6,9 @@ import models.Person;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A utility class with static methods to convert person objects.
+ * */
 public class PersonConverter {
     public static PersonDto modelToDto(Person person) {
         if (person == null) {
@@ -17,17 +20,6 @@ public class PersonConverter {
                 .email(person.getEmail())
                 .favoriteProgrammingLanguage(person.getFavoriteProgrammingLanguage())
                 .build();
-    }
-
-    public static Person dtoToModel(PersonDto personDto) {
-        if (personDto == null) {
-            return null;
-        }
-        return new Person(
-                personDto.getId(),
-                personDto.getName(),
-                personDto.getEmail(),
-                personDto.getFavoriteProgrammingLanguage());
     }
 
     public static List<PersonDto> modelListToDtoList(List<Person> persons) {

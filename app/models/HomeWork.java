@@ -11,6 +11,9 @@ import javax.persistence.Entity;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * An entity class for Homework
+ * */
 @Entity
 @NoArgsConstructor
 @Getter

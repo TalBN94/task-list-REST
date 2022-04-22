@@ -11,7 +11,6 @@ import io.ebean.DuplicateKeyException;
 import models.Chore;
 import models.HomeWork;
 import models.Person;
-import org.apache.commons.validator.routines.EmailValidator;
 import play.libs.Json;
 import play.mvc.Http;
 import utils.*;
@@ -21,14 +20,23 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A service class for Person which implements the server logic and interaction with DB
+ * */
 public class PersonsService {
 
+    /**
+     * Creates a new person in the system.
+     * @return the newly created person data
+     * @throws DuplicateKeyException if the email already exists in the system
+     * @throws InvalidPersonException if some fields are missing or data is not as expected
+     * */
     public PersonDto createPerson(Http.Request request) throws InvalidPersonException {
         // Convert request body to entity
         Person person = Json.fromJson(request.body().asJson(), Person.class);
 
         // Validate all fields are present
-        validateAllPersonFieldsPresent(person);
+        Validators.validateAllPersonFieldsPresent(person);
 
         // Try saving, throw exception if email isn't unique
         try {
@@ -39,29 +47,27 @@ public class PersonsService {
         }
     }
 
-    private void validateAllPersonFieldsPresent(Person person) throws InvalidPersonException {
-        if (person.getName() == null) {
-            throw new InvalidPersonException(MsgGenerator.missingField(Constants.NAME));
-        }
-        if (person.getEmail() == null) {
-            throw new InvalidPersonException(MsgGenerator.missingField(Constants.EMAIL));
-        }
-        if (!Validators.isValidEmail(person.getEmail())) {
-            throw new InvalidPersonException(MsgGenerator.invalidEmail(person.getEmail()));
-        }
-        if (person.getFavoriteProgrammingLanguage() == null) {
-            throw new InvalidPersonException(MsgGenerator.missingField(Constants.FAVORITE_PROGRAMMING_LANGUAGE));
-        }
-    }
-
+    /**
+     * Gets all the persons from the system.
+     * @return A list of the persons details
+     * */
     public List<PersonDto> getAll() {
         return PersonConverter.modelListToDtoList(Person.find.all());
     }
 
+    /**
+     * Gets a person from the system by its id.
+     * @return the person's details, or null if the person doesn't exist
+     * */
     public PersonDto getPerson(String id) {
         return PersonConverter.modelToDto(Person.find.byId(id));
     }
 
+    /**
+     * Updates a person in the system.
+     * @return the updated person's details, null if no such person exists
+     * @throws InvalidPersonException if the email is invalid
+     * */
     public PersonDto update(String id, PersonDto updatePersonDto) throws InvalidPersonException {
         Person person = Person.find.byId(id);
 
@@ -90,6 +96,10 @@ public class PersonsService {
         return PersonConverter.modelToDto(person);
     }
 
+    /**
+     * Deletes a person from the system.
+     * @return whether deletion was successful
+     * */
     public boolean delete(String id) {
         Person personToDelete = Person.find.byId(id);
         if (personToDelete == null) {
@@ -98,6 +108,11 @@ public class PersonsService {
         return personToDelete.delete();
     }
 
+    /**
+     * Adds a task to the specified person.
+     * @return the newly created task, or null if no such person exists
+     * @throws InvalidTaskException if the task is invalid
+     * */
     public TaskDto addTask(String id, Http.Request request) throws InvalidTaskException {
         Person person = Person.find.byId(id);
 
@@ -108,11 +123,11 @@ public class PersonsService {
         try {
             TaskDto task = Json.fromJson(request.body().asJson(), TaskDto.class);
             task.setOwnerId(UUID.fromString(id));
-            if (task.getType().equals(Constants.CHORE)) {
+            if (task.getType().equalsIgnoreCase(Constants.CHORE)) {
                 Validators.validateAllChoreFieldsPresent((ChoreDto) task);
                 return addChore(task);
             }
-            else if (task.getType().equals(Constants.HOMEWORK)) {
+            else if (task.getType().equalsIgnoreCase(Constants.HOMEWORK)) {
                 Validators.validateAllHomeWorkFieldsPresent((HomeWorkDto) task);
                 return addHomeWork(task);
             }
@@ -125,11 +140,24 @@ public class PersonsService {
 
     }
 
-    public List<TaskDto> getPersonTasks(String id, Status status) {
+    /**
+     * Gets the list of tasks which the user owns.
+     * @return the list of all owned tasks if status is not specified, the list of tasks in the specified status, or
+     * null if no such person exists
+     * @throws InvalidTaskException if the specified status is not a valid status
+     * */
+    public List<TaskDto> getPersonTasks(String id, String status) throws InvalidTaskException {
+        if (Person.find.byId(id) == null) {
+            return null;
+        }
         if (status == null) {
             return getPersonTasksNoStatus(id);
         }
-        return getPersonTasksWithStatus(id, status);
+        Status eStatus = Status.getStatusByName(status);
+        if (eStatus == null) {
+            throw new InvalidTaskException(MsgGenerator.invalidStatus(status));
+        }
+        return getPersonTasksWithStatus(id, eStatus);
     }
 
 
@@ -139,7 +167,9 @@ public class PersonsService {
     // #######################
 
     private List<TaskDto> getPersonTasksNoStatus(String id) {
+        // Find all Chore type tasks
         List<Chore> chores = Chore.find.query().where().eq(Constants.OWNER_ID, id).findList();
+        //Find all HomeWork type tasks
         List<HomeWork> homeworks = HomeWork.find.query().where().eq(Constants.OWNER_ID, id).findList();
         return Stream.concat(
                 TaskConverter.choreListToDtoList(chores).stream(),
@@ -147,7 +177,9 @@ public class PersonsService {
         ).collect(Collectors.toList());
     }
     private List<TaskDto> getPersonTasksWithStatus(String id, Status status) {
+        // Find all Chore type tasks in the specified status
         List<Chore> chores = Chore.find.query().where().eq(Constants.OWNER_ID, id).eq(Constants.STATUS, status).findList();
+        //Find all HomeWork type tasks in the specified status
         List<HomeWork> homeworks = HomeWork.find.query().where().eq(Constants.OWNER_ID, id).eq(Constants.STATUS, status).findList();
         return Stream.concat(
                 TaskConverter.choreListToDtoList(chores).stream(),

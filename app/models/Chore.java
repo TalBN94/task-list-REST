@@ -11,6 +11,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.UUID;
 
+/**
+ * An entity class for Chores
+ * */
 @Entity
 @NoArgsConstructor
 @Getter

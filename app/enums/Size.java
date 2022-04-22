@@ -1,5 +1,8 @@
 package enums;
 
+/**
+ * Enum which indicates a chore's size
+ * */
 public enum Size {
     Small, Medium, Large;
 

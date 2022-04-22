@@ -7,6 +7,9 @@ import lombok.*;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * A DTO class to transfer Task updates data
+ * */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

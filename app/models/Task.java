@@ -11,6 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import java.util.UUID;
 
+/**
+ * An abstract class to be extended in task types entities
+ * */
 @MappedSuperclass
 @Getter
 @Setter

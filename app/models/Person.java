@@ -12,6 +12,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.UUID;
 
+/**
+ * An entity class for Person
+ * */
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

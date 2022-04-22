@@ -4,6 +4,9 @@ import lombok.*;
 
 import java.util.UUID;
 
+/**
+ * A DTO class to transfer Person data
+ * */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

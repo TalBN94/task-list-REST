@@ -1,5 +1,8 @@
 package utils;
 
+/**
+ * A utility class to generate messages used in the system.
+ * */
 public class MsgGenerator {
     public static String missingField(String fieldName) {
         return String.format("%s field is missing.", fieldName);

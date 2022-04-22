@@ -10,6 +10,9 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * A DTO class to transfer HomeWork task type data
+ * */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,8 +23,10 @@ public class HomeWorkDto extends TaskDto{
     private Date dueDate;
     private String details;
 
-    public HomeWorkDto(UUID id, UUID ownerId, Status status, String type, String course, Date dueDate, String details) {
-        super(id, ownerId, status, type);
+    public HomeWorkDto(UUID id, UUID ownerId, Status status, String course, Date dueDate, String details) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.status = status;
         this.course = course;
         this.dueDate = dueDate;
         this.details = details;
