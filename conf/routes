@@ -2,10 +2,6 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# An example controller showing a sample home page
-GET     /                           controllers.HomeController.index()
-#GET     /welcome/:name                      controllers.HomeController.welcome(name: String)
-
 # Persons controller
 GET     /people                             controllers.PersonsController.getAll
 GET     /people/:id                         controllers.PersonsController.getPerson(id: String)
