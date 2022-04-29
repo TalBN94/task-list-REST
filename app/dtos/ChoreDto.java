@@ -1,7 +1,9 @@
 package dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import enums.Size;
 import enums.Status;
+import enums.TaskType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +21,11 @@ import java.util.UUID;
 @Setter
 public class ChoreDto extends TaskDto{
     private String description;
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
     private Size size;
 
     public ChoreDto(UUID id, UUID ownerId, Status status, String description, Size size) {
-        super(id, ownerId, status, Constants.CHORE);
+        super(id, TaskType.Chore, ownerId, status);
         this.description = description;
         this.size = size;
     }

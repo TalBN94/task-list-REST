@@ -2,11 +2,11 @@ package dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import enums.Status;
+import enums.TaskType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import utils.Constants;
 
 import java.util.Date;
 import java.util.UUID;
@@ -25,7 +25,7 @@ public class HomeWorkDto extends TaskDto{
     private String details;
 
     public HomeWorkDto(UUID id, UUID ownerId, Status status,String course, Date dueDate, String details) {
-        super(id, ownerId, status, Constants.HOMEWORK);
+        super(id, TaskType.HomeWork, ownerId, status);
         this.course = course;
         this.dueDate = dueDate;
         this.details = details;

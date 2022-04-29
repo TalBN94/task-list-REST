@@ -3,28 +3,6 @@
 
 # --- !Ups
 
-create table chore (
-  id                            uuid not null,
-  owner_id                      uuid not null,
-  status                        integer not null,
-  description                   varchar(255) not null,
-  size                          integer not null,
-  constraint ck_chore_status check ( status in (0,1)),
-  constraint ck_chore_size check ( size in (0,1,2)),
-  constraint pk_chore primary key (id)
-);
-
-create table home_work (
-  id                            uuid not null,
-  owner_id                      uuid not null,
-  status                        integer not null,
-  course                        varchar(255) not null,
-  due_date                      timestamp not null,
-  details                       varchar(255) not null,
-  constraint ck_home_work_status check ( status in (0,1)),
-  constraint pk_home_work primary key (id)
-);
-
 create table person (
   id                            uuid not null,
   name                          varchar(255) not null,
@@ -34,12 +12,32 @@ create table person (
   constraint pk_person primary key (id)
 );
 
+create table task (
+  id                            uuid not null,
+  ownerid                       uuid not null,
+  status                        integer not null,
+  type                          integer not null,
+  course                        varchar(255),
+  due_date                      timestamp,
+  details                       varchar(255),
+  description                   varchar(255),
+  size                          integer,
+  constraint ck_task_status check ( status in (0,1)),
+  constraint ck_task_type check ( type in (0,1)),
+  constraint ck_task_size check ( size in (0,1,2)),
+  constraint pk_task primary key (id)
+);
+
+create index ix_task_ownerid on task (ownerid);
+alter table task add constraint fk_task_ownerid foreign key (ownerid) references person (id) on delete restrict on update restrict;
+
 
 # --- !Downs
 
-drop table if exists chore;
-
-drop table if exists home_work;
+alter table task drop constraint if exists fk_task_ownerid;
+drop index if exists ix_task_ownerid;
 
 drop table if exists person;
+
+drop table if exists task;
 

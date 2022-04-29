@@ -5,12 +5,14 @@ import dtos.TaskDto;
 import exceptions.InvalidPersonException;
 import exceptions.InvalidTaskException;
 import play.libs.Json;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import services.PersonsService;
 import utils.Constants;
 import utils.MsgGenerator;
+import utils.Validators;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -31,14 +33,18 @@ public class PersonsController extends Controller {
      * @return 201 status if creation succeeded
      *         400 status if creation failed (with indicative text message)
      * */
+    @BodyParser.Of(BodyParser.Json.class)
     public Result createPerson(Http.Request request) {
         try {
             PersonDto personDto = personsService.createPerson(request);
+            String locationUrl = Constants.HTTP + request.host() + request.uri() + "/" + personDto.getId();
             return created()
-                    .withHeader(Constants.LOCATION_HEADER, "some url") //TODO - verify what should be the URL
+                    .withHeader(Constants.LOCATION_HEADER, locationUrl)
                     .withHeader(Constants.CREATED_ID_HEADER, personDto.getId().toString());
         } catch (InvalidPersonException e) {
             return badRequest(e.getMessage());
+        } catch (RuntimeException e) {
+            return badRequest(MsgGenerator.badFormat());
         }
     }
 
@@ -56,6 +62,9 @@ public class PersonsController extends Controller {
      *         404 status if the user id doesn't exist
      * */
     public Result getPerson(String id) {
+        if (!Validators.isValidId(id)) {
+            return notFound(MsgGenerator.personIdNotFound(id));
+        }
         PersonDto personDto = personsService.getPerson(id);
         if (personDto == null) {
             return notFound(MsgGenerator.personIdNotFound(id));
@@ -69,15 +78,25 @@ public class PersonsController extends Controller {
      *         404 status if the user id doesn't exist
      *         400 status if update fails with indicative message
      * */
+    @BodyParser.Of(BodyParser.Json.class)
     public Result updatePerson(String id, Http.Request request) {
         try {
-            PersonDto updatedPerson = personsService.update(id, Json.fromJson(request.body().asJson(), PersonDto.class));
+            if (!Validators.isValidId(id)) {
+                return notFound(MsgGenerator.personIdNotFound(id));
+            }
+            PersonDto updatePersonDto = Json.fromJson(request.body().asJson(), PersonDto.class);
+            if (updatePersonDto == null) {
+                return badRequest(MsgGenerator.noUpdateData());
+            }
+            PersonDto updatedPerson = personsService.update(id, updatePersonDto);
             if (updatedPerson == null) {
                 return notFound(MsgGenerator.personIdNotFound(id));
             }
             return ok(Json.toJson(updatedPerson));
         } catch (InvalidPersonException e) {
             return badRequest(e.getMessage());
+        }  catch (RuntimeException e) {
+            return badRequest(MsgGenerator.badFormat());
         }
     }
 
@@ -87,6 +106,9 @@ public class PersonsController extends Controller {
      *         404 status if the user id doesn't exist
      * */
     public Result deletePerson(String id) {
+        if (!Validators.isValidId(id)) {
+            return notFound(MsgGenerator.personIdNotFound(id));
+        }
         if (personsService.delete(id)) {
             return ok();
         } else {
@@ -103,6 +125,9 @@ public class PersonsController extends Controller {
      * */
     public Result getPersonTasks(String id, String status) {
         try {
+            if (!Validators.isValidId(id)) {
+                return notFound(MsgGenerator.personIdNotFound(id));
+            }
             List<TaskDto> foundTasks = personsService.getPersonTasks(id, status);
             if (foundTasks != null) {
                 return ok(Json.toJson(foundTasks));
@@ -119,17 +144,24 @@ public class PersonsController extends Controller {
      *         400 status the request is invalid (data fields missing, data makes no sense, data contains illegal values)
      *         404 status if the user id doesn't exist
      * */
+    @BodyParser.Of(BodyParser.Json.class)
     public Result addTask(String id, Http.Request request) {
         try {
+            if (!Validators.isValidId(id)) {
+                return notFound(MsgGenerator.personIdNotFound(id));
+            }
             TaskDto taskDto = personsService.addTask(id, request);
             if (taskDto == null) {
                 return notFound(MsgGenerator.personIdNotFound(id));
             }
+            String locationUrl = Constants.HTTP + request.host() + "/api/tasks/" + taskDto.getId();
             return created()
-                    .withHeader(Constants.LOCATION_HEADER, "some url") //TODO - verify what should be the URL
+                    .withHeader(Constants.LOCATION_HEADER, locationUrl)
                     .withHeader(Constants.CREATED_ID_HEADER, taskDto.getId().toString());
         } catch (InvalidTaskException e) {
             return badRequest(e.getMessage());
+        } catch (RuntimeException e) {
+            return badRequest(MsgGenerator.badFormat());
         }
     }
 

@@ -17,4 +17,5 @@ public class PersonDto {
     private String name;
     private String email;
     private String favoriteProgrammingLanguage;
+    private Integer activeTaskCount;
 }

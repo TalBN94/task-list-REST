@@ -1,5 +1,7 @@
 package enums;
 
+import utils.Constants;
+
 /**
  * Enum which indicates a chore's size
  * */
@@ -7,16 +9,13 @@ public enum Size {
     Small, Medium, Large;
 
     public static Size getSizeByName(String name) {
-        if (name == null) {
-            return null;
-        }
-        if (name.equalsIgnoreCase("small")) {
+        if (Constants.SMALL.equalsIgnoreCase(name)) {
             return Small;
         }
-        if (name.equalsIgnoreCase("medium")) {
+        if (Constants.MEDIUM.equalsIgnoreCase(name)) {
             return Medium;
         }
-        if (name.equalsIgnoreCase("large")) {
+        if (Constants.LARGE.equalsIgnoreCase(name)) {
             return Large;
         }
         return null;

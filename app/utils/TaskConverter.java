@@ -1,16 +1,17 @@
 package utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import dtos.ChoreDto;
 import dtos.HomeWorkDto;
 import dtos.TaskDto;
 import dtos.TaskUpdateDto;
 import enums.Status;
-import models.Chore;
-import models.HomeWork;
+import enums.TaskType;
+import exceptions.InvalidTaskException;
+import models.Person;
 import models.Task;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import play.libs.Json;
+import play.mvc.Http;
 
 /**
  * A utility class with static methods to convert task objects.
@@ -21,24 +22,39 @@ public class TaskConverter {
      * Converts TaskDTO to HomeWork entity.
      * @return HomeWork entity
      * */
-    public static HomeWork homeWorkDtoToHomeWorkModel(HomeWorkDto homeWorkDto) {
+    public static Task homeWorkDtoToTaskModel(HomeWorkDto homeWorkDto, Person owner) {
         if (homeWorkDto == null) {
             return null;
         }
         Status status = homeWorkDto.getStatus() == null ? Status.Active : homeWorkDto.getStatus();
-        return new HomeWork(homeWorkDto.getId(), homeWorkDto.getOwnerId(), status, homeWorkDto.getCourse(), homeWorkDto.getDueDate(), homeWorkDto.getDetails());
+        return Task.builder()
+                .id(homeWorkDto.getId())
+                .type(TaskType.HomeWork)
+                .owner(owner)
+                .status(status)
+                .details(homeWorkDto.getDetails())
+                .dueDate(homeWorkDto.getDueDate())
+                .course(homeWorkDto.getCourse())
+                .build();
     }
 
     /**
      * Converts TaskDTO to Chore entity.
      * @return Chore entity
      * */
-    public static Chore choreDtoToChoreModel(ChoreDto choreDto) {
+    public static Task choreDtoToTaskModel(ChoreDto choreDto, Person owner) {
         if (choreDto == null) {
             return null;
         }
         Status status = choreDto.getStatus() == null ? Status.Active : choreDto.getStatus();
-        return new Chore(choreDto.getId(), choreDto.getOwnerId(), status, choreDto.getDescription(), choreDto.getSize());
+        return Task.builder()
+                .id(choreDto.getId())
+                .type(TaskType.Chore)
+                .owner(owner)
+                .status(status)
+                .description(choreDto.getDescription())
+                .size(choreDto.getSize())
+                .build();
     }
 
     /**
@@ -46,27 +62,10 @@ public class TaskConverter {
      * @return the TaskDTO
      * */
     public static TaskDto modelToDto(Task task) {
-        if (task instanceof Chore) {
-            return modelToChoreTaskDto((Chore)task);
-        } else {
-            return modelToHomeWorkTaskDto((HomeWork)task);
+        if (task.getType() == TaskType.HomeWork) {
+            return modelToHomeWorkTaskDto(task);
         }
-    }
-
-    /**
-     * Converts a list of Chore entities to a list of TaskDTOs.
-     * @return the list of TaskDTOs
-     * */
-    public static List<TaskDto> choreListToDtoList(List<Chore> chores) {
-        return chores.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
-    }
-
-    /**
-     * Converts a list of HomeWork entities to a list of TaskDTOs.
-     * @return the list of TaskDTOs
-     * */
-    public static List<TaskDto> homeWorkListToDtoList(List<HomeWork> homeworks) {
-        return homeworks.stream().map(TaskConverter::modelToDto).collect(Collectors.toList());
+        return modelToChoreTaskDto(task);
     }
 
     /**
@@ -98,28 +97,49 @@ public class TaskConverter {
         );
     }
 
+    public static TaskDto requestToTaskDto(Http.Request request) throws InvalidTaskException {
+        try {
+            return Json.fromJson(request.body().asJson(), TaskDto.class);
+        } catch (RuntimeException e) {
+            JsonNode status = request.body().asJson().get(Constants.STATUS);
+            throw new InvalidTaskException(MsgGenerator.invalidStatus(status.asText()));
+        }
+    }
+
+    public static ChoreDto requestToChoreDto(Http.Request request) throws InvalidTaskException {
+        try {
+            return Json.fromJson(request.body().asJson(), ChoreDto.class);
+        } catch (RuntimeException e) {
+            JsonNode size = request.body().asJson().get(Constants.SIZE);
+            if (size == null) {
+                throw new InvalidTaskException(MsgGenerator.missingField(Constants.SIZE));
+            }
+            throw new InvalidTaskException(MsgGenerator.invalidSize(size.asText()));
+        }
+    }
+
     ////////////////////
     // Helper functions
     ////////////////////
 
-    private static TaskDto modelToChoreTaskDto(Chore chore) {
+    private static TaskDto modelToChoreTaskDto(Task chore) {
         return new ChoreDto(
                 chore.getId(),
-                chore.getOwnerId(),
+                chore.getOwner().getId(),
                 chore.getStatus(),
                 chore.getDescription(),
                 chore.getSize()
         );
     }
 
-    private static TaskDto modelToHomeWorkTaskDto(HomeWork homeWork) {
+    private static TaskDto modelToHomeWorkTaskDto(Task homework) {
         return new HomeWorkDto(
-                homeWork.getId(),
-                homeWork.getOwnerId(),
-                homeWork.getStatus(),
-                homeWork.getCourse(),
-                homeWork.getDueDate(),
-                homeWork.getDetails()
+                homework.getId(),
+                homework.getOwner().getId(),
+                homework.getStatus(),
+                homework.getCourse(),
+                homework.getDueDate(),
+                homework.getDetails()
         );
     }
 }

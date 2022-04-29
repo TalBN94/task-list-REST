@@ -3,22 +3,22 @@
 # ~~~~
 
 # Persons controller
-GET     /people                             controllers.PersonsController.getAll
-GET     /people/:id                         controllers.PersonsController.getPerson(id: String)
-GET     /people/:id/tasks                   controllers.PersonsController.getPersonTasks(id: String, status: String ?=null)
-POST    /people                             controllers.PersonsController.createPerson(request: Request)
-POST    /people/:id/tasks                   controllers.PersonsController.addTask(id: String, request: Request)
-PATCH   /people/:id                         controllers.PersonsController.updatePerson(id: String, request: Request)
-DELETE  /people/:id                         controllers.PersonsController.deletePerson(id: String)
+GET     /api/people                             controllers.PersonsController.getAll
+GET     /api/people/:id                         controllers.PersonsController.getPerson(id: String)
+GET     /api/people/:id/tasks                   controllers.PersonsController.getPersonTasks(id: String, status: String ?=null)
+POST    /api/people                             controllers.PersonsController.createPerson(request: Request)
+POST    /api/people/:id/tasks                   controllers.PersonsController.addTask(id: String, request: Request)
+PATCH   /api/people/:id                         controllers.PersonsController.updatePerson(id: String, request: Request)
+DELETE  /api/people/:id                         controllers.PersonsController.deletePerson(id: String)
 
 # Tasks controller
-GET     /tasks/:id                          controllers.TasksController.getTask(id: String)
-GET     /tasks/:id/status                   controllers.TasksController.getTaskStatus(id: String)
-GET     /tasks/:id/owner                    controllers.TasksController.getTaskOwner(id: String)
-PATCH   /tasks/:id                          controllers.TasksController.updateTask(id: String, request: Request)
-DELETE  /tasks/:id                          controllers.TasksController.deleteTask(id: String)
-PUT     /tasks/:id/status                   controllers.TasksController.updateTaskStatus(id: String, request: Request)
-PUT     /tasks/:id/owner                   controllers.TasksController.updateTaskOwner(id: String, request: Request)
+GET     /api/tasks/:id                          controllers.TasksController.getTask(id: String)
+GET     /api/tasks/:id/status                   controllers.TasksController.getTaskStatus(id: String)
+GET     /api/tasks/:id/owner                    controllers.TasksController.getTaskOwner(id: String)
+PATCH   /api/tasks/:id                          controllers.TasksController.updateTask(id: String, request: Request)
+DELETE  /api/tasks/:id                          controllers.TasksController.deleteTask(id: String)
+PUT     /api/tasks/:id/status                   controllers.TasksController.updateTaskStatus(id: String, request: Request)
+PUT     /api/tasks/:id/owner                   controllers.TasksController.updateTaskOwner(id: String, request: Request)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

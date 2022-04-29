@@ -1,6 +1,7 @@
 package utils;
 
 import dtos.PersonDto;
+import enums.Status;
 import models.Person;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class PersonConverter {
                 .name(person.getName())
                 .email(person.getEmail())
                 .favoriteProgrammingLanguage(person.getFavoriteProgrammingLanguage())
+                .activeTaskCount((int) person.getTasks().stream().filter(task -> task.getStatus() == Status.Active).count())
                 .build();
     }
 

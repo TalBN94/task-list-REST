@@ -1,6 +1,8 @@
 package dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import enums.Status;
+import enums.TaskType;
 import lombok.*;
 
 import java.util.UUID;
@@ -15,7 +17,9 @@ import java.util.UUID;
 @Builder
 public class TaskDto {
     protected UUID id;
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
+    protected TaskType type;
     protected UUID ownerId;
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
     protected Status status;
-    protected String type;
 }

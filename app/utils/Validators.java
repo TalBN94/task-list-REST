@@ -5,7 +5,10 @@ import dtos.HomeWorkDto;
 import exceptions.InvalidPersonException;
 import exceptions.InvalidTaskException;
 import models.Person;
+import org.apache.commons.validator.GenericValidator;
 import org.apache.commons.validator.routines.EmailValidator;
+
+import java.util.UUID;
 
 /**
  * A utility class with validators used in the server.
@@ -34,11 +37,32 @@ public class Validators {
     }
 
     /**
-     * Validated an email address
+     * Validates an email address
      * @return true if email is valid, false otherwise
      * */
     public static boolean isValidEmail(String email) {
         return EmailValidator.getInstance().isValid(email);
+    }
+
+    /**
+     * Validated a date is in the format of yyyy-MM-dd
+     * @return true if date is valid, false otherwise
+     * */
+    public static boolean isValidDate(String date) {
+        return GenericValidator.isDate(date, Constants.DATE_PATTERN, true);
+    }
+
+    /**
+     * Validates an id is a UUID
+     * @return true if the id is a UUID, false otherwise
+     * */
+    public static boolean isValidId(String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     ///////////////////
