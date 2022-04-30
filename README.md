@@ -8,9 +8,19 @@ and produce a discussion in class about pros and cons of the language+framework,
 * How did we map entities from JSON to the data store and back? did our technology stack help?
 * Reading entities from the data store - how bad was this? did the language/framework help?
 * Performing summation queries on the data store (i.e. active tasks per person) - how bad was it? did the language/frameork help?
+---
 
 ## Getting Started
 TODO
+---
+
+## API Documentation
+The entire API documentation can be found [here](https://mbarsinai.com/files/bgu/2022a/miniproj/swagger/#/ "API docs"). A few extra points which aren't mentioned in the above doc:
+* For any request which requires an `application/json` media type request body, but has a different media type, a `415` unsupported media type is returned.
+* When using the `PATCH` method to update a task, a user may change the `TaskType` completely. However, if one wishes to do so (for exmaple: convert `Chore` to `HomeWork`),
+  all of the fields for the new `TaskType` must be part of the request body JSON. Failing to do so will return a `400` bad request.
+* Enum values: `Status`, `TaskType`, `Size` can be sent as part of the request without worrying about casing, as the server treats them case-insensitive.
+---
 
 ## High Level System Design
 <img width="1432" alt="ציור1" src="https://user-images.githubusercontent.com/63551039/166100013-f354062d-8a91-41eb-bede-ff0e17bc0c9f.png">
@@ -25,14 +35,8 @@ TODO
   transfers controll to the `PersonsService`, and `TasksController` transfers controll to the `TasksService`.
 * Using Play Ebean plugin, the service layer communicates with an embedded H2 tabular DB (if needed), and returns results (DTOs, booleans, exceptions and so on)
   back to the controller layer, and then an HTTP response is sent back to the client according to the buisness logic.
+---
   
-## API Documentation
-The entire API documentation can be found [here](https://mbarsinai.com/files/bgu/2022a/miniproj/swagger/#/ "API docs"). A few extra points which aren't mentioned in the above doc:
-* For any request which requires an `application/json` media type request body, but has a different media type, a `415` unsupported media type is returned.
-* When using the `PATCH` method to update a task, a user may change the `TaskType` completely. However, if one wishes to do so (for exmaple: convert `Chore` to `HomeWork`),
-  all of the fields for the new `TaskType` must be part of the request body JSON. Failing to do so will return a `400` bad request.
-* Enum values: `Status`, `TaskType`, `Size` can be sent as part of the request without worrying about casing, as the server treats them case-insensitive.
-
 ## Low Level System Design
 ### Controllers & Services
 There are 2 types of controllers in the controller layer: `PersonsController` which handles routes related to persons, and `TasksController` which handles routes related to tasks.
