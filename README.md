@@ -31,7 +31,7 @@ The entire API documentation can be found [here](https://mbarsinai.com/files/bgu
 * For any request which requires an `application/json` media type request body, but has a different media type, a `415` unsupported media type is returned.
 * When using the `PATCH` method to update a task, a user may change the `TaskType` completely. However, if one wishes to do so (for exmaple: convert `Chore` to `HomeWork`),
   all of the fields for the new `TaskType` must be part of the request body JSON. Failing to do so will return a `400` bad request.
-* Enum values: `Status`, `TaskType`, `Size` can be sent as part of the request without worrying about casing, as the server handles them case-insensitive.
+* Enum values: `Status`, `TaskType`, `Size` can be sent as part of the request without worrying about casing, as the server treats them case-insensitive.
 
 ## Low Level System Design
 ### Controllers & Services
