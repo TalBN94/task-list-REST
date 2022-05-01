@@ -2,6 +2,9 @@ package enums;
 
 import utils.Constants;
 
+/**
+ * Enum which indicates a task's type
+ * */
 public enum TaskType {
     Chore, HomeWork;
 
