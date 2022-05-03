@@ -3,11 +3,11 @@
 # ~~~~
 
 # Persons controller
-GET     /api/people                             controllers.PersonsController.getAll
+GET     /api/people/                             controllers.PersonsController.getAll
 GET     /api/people/:id                         controllers.PersonsController.getPerson(id: String)
-GET     /api/people/:id/tasks                   controllers.PersonsController.getPersonTasks(id: String, status: String ?=null)
-POST    /api/people                             controllers.PersonsController.createPerson(request: Request)
-POST    /api/people/:id/tasks                   controllers.PersonsController.addTask(id: String, request: Request)
+GET     /api/people/:id/tasks/                   controllers.PersonsController.getPersonTasks(id: String, status: String ?=null)
+POST    /api/people/                             controllers.PersonsController.createPerson(request: Request)
+POST    /api/people/:id/tasks/                   controllers.PersonsController.addTask(id: String, request: Request)
 PATCH   /api/people/:id                         controllers.PersonsController.updatePerson(id: String, request: Request)
 DELETE  /api/people/:id                         controllers.PersonsController.deletePerson(id: String)
 
