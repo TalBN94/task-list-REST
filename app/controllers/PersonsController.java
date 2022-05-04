@@ -40,7 +40,8 @@ public class PersonsController extends Controller {
             String locationUrl = Constants.HTTP + request.host() + request.uri() + "/" + personDto.getId();
             return created()
                     .withHeader(Constants.LOCATION_HEADER, locationUrl)
-                    .withHeader(Constants.CREATED_ID_HEADER, personDto.getId().toString());
+                    .withHeader(Constants.CREATED_ID_HEADER, personDto.getId().toString())
+                    .withHeader(Constants.CORS_HEADER, Constants.LOCATION_HEADER + ", " + Constants.CREATED_ID_HEADER);
         } catch (InvalidPersonException e) {
             return badRequest(e.getMessage());
         } catch (RuntimeException e) {
@@ -157,7 +158,8 @@ public class PersonsController extends Controller {
             String locationUrl = Constants.HTTP + request.host() + "/api/tasks/" + taskDto.getId();
             return created()
                     .withHeader(Constants.LOCATION_HEADER, locationUrl)
-                    .withHeader(Constants.CREATED_ID_HEADER, taskDto.getId().toString());
+                    .withHeader(Constants.CREATED_ID_HEADER, taskDto.getId().toString())
+                    .withHeader(Constants.CORS_HEADER, Constants.LOCATION_HEADER + ", " + Constants.CREATED_ID_HEADER);
         } catch (InvalidTaskException e) {
             return badRequest(e.getMessage());
         } catch (RuntimeException e) {

@@ -5,8 +5,9 @@ package utils;
  * */
 public class Constants {
     public static String LOCATION_HEADER = "Location";
-    public static String HTTP = "http://";
     public static String CREATED_ID_HEADER = "x-Created-id";
+    public static String CORS_HEADER = "Access-Control-Expose-Headers";
+    public static String HTTP = "http://";
     public static String NAME = "name";
     public static String EMAIL = "email";
     public static String FAVORITE_PROGRAMMING_LANGUAGE = "favoriteProgrammingLanguage";
