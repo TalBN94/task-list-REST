@@ -24,10 +24,11 @@ and produce a discussion in class about pros and cons of the language+framework,
 ``./task-list-rest -Dplay.evolutions.db.default.autoApply=true -Dplay.http.secret.key='`6[xyJ7R?tJ6m3<?qVZPp@ccWi7zzV[0YEWLUo`uXyRSj_i?[i1m8J?JHogn]?3<'``
   * Now you can send requests to the API using differnet web tools such as Postman.
 4. <ins>For Windows users</ins>:
-  * Open `cmd` in the unzipped folder.
+  * Run `cmd` as administartor.
+  * `cd` to the unzipped folder.
   * Navigate to the `bin` folder.
   * To run the system, execute the following command:
-``task-list-rest.bat -Dplay.evolutions.db.default.autoApply=true -Dplay.http.secret.key='`6[xyJ7R?tJ6m3<?qVZPp@ccWi7zzV[0YEWLUo`uXyRSj_i?[i1m8J?JHogn]?3<'``
+``task-list-rest.bat "-Dplay.evolutions.db.default.autoApply=true" "-Dplay.http.secret.key='`6[xyJ7R?tJ6m3<?qVZPp@ccWi7zzV[0YEWLUo`uXyRSj_i?[i1m8J?JHogn]?3<'"``
 
 ---
 
