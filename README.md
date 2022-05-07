@@ -17,7 +17,7 @@ and produce a discussion in class about pros and cons of the language+framework,
 ### Instructions
 3. Download the the `task-list-rest-1.0-SNAPSHOT.zip` file attached to the release.
 4. Unzip the file in the folder where you'd like to run the server.
-5. <ins>For Mac users</ins>:
+5. <ins>For Mac/Linux users</ins>:
   * Open the terminal in the unzipped folder.
   * Navigate to the `bin` folder.
   * To run the system, execute the following command:
