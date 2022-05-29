@@ -37,7 +37,7 @@ public class PersonsController extends Controller {
     public Result createPerson(Http.Request request) {
         try {
             PersonDto personDto = personsService.createPerson(request);
-            String locationUrl = Constants.HTTP + request.host() + request.uri() + "/" + personDto.getId();
+            String locationUrl = Constants.HTTP + request.host() + request.uri() + personDto.getId();
             return created()
                     .withHeader(Constants.LOCATION_HEADER, locationUrl)
                     .withHeader(Constants.CREATED_ID_HEADER, personDto.getId().toString())
