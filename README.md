@@ -16,7 +16,7 @@ and produce a discussion in class about pros and cons of the language+framework,
 
 ### Instructions
 **Note: default port of the system is 9000**
-1. Download the the `task-list-rest-1.0-SNAPSHOT.zip` file attached to the release.
+1. Download the the `task-list-rest-1.0-SNAPSHOT.zip` file attached to the release (or from [here](https://drive.google.com/file/d/1FxpHVSBMRSrjZAiq7Yzlgh6tJrjhF-SK/view?usp=sharing))
 2. Unzip the file in the folder where you'd like to run the server.
 3. <ins>For Mac/Linux users</ins>:
   * Open the terminal in the unzipped folder.
