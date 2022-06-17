@@ -15,7 +15,7 @@ and produce a discussion in class about pros and cons of the language+framework,
 1. The application must run on Java 11 as per Play framework's limitations.
 
 ### Instructions
-#Note: default port of the system is 9000#
+**Note: default port of the system is 9000
 1. Download the the `task-list-rest-1.0-SNAPSHOT.zip` file attached to the release.
 2. Unzip the file in the folder where you'd like to run the server.
 3. <ins>For Mac/Linux users</ins>:
